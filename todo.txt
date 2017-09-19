@@ -1,0 +1,2 @@
+(17:40:58) Sysadmin: { "token": "ed076287532e86365e841e92bfc50d8c", "ref": "refs/heads/develop", "user_name": "41", "user_email": "aleksandr.zmiievets@gns-it.com" }
+(17:42:26) Sysadmin: "POST /autodeploy.php?token=ed076287532e86365e841e92bfc50d8c HTTP/1.1" 200 5 "-" "curl/7.29.0"
