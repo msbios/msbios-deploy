@@ -11,6 +11,7 @@ use MSBios\ModuleInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\Router\Http\Literal;
+use Zend\Router\Http\Method;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -37,7 +38,6 @@ class Module implements ModuleInterface, BootstrapListenerInterface
      */
     public function onBootstrap(EventInterface $e)
     {
-
         /** @var ServiceLocatorInterface $serviceLocator */
         $serviceLocator = $e->getTarget()->getServicemanager();
 
@@ -45,13 +45,21 @@ class Module implements ModuleInterface, BootstrapListenerInterface
         $route = Literal::factory([
             'route' => $serviceLocator->get(self::class)->get('url'),
             'defaults' => [
-                'controller' => IndexController::class,
-                'action' => 'index',
+                'controller' => IndexController::class
             ],
+            'may_terminate' => true,
+            'child_routes' => [
+                'post' => [
+                    'type' => Method::class,
+                    'options' => [
+                        'verb' => 'post'
+                    ]
+                ]
+            ]
         ]);
 
         /** @var ServiceLocatorInterface $serviceLocator */
         $serviceLocator = $e->getTarget()->getServicemanager();
-        $serviceLocator->get('Router')->addRoute('auto-deploy', $route);
+        $serviceLocator->get('Router')->addRoute('deploy', $route);
     }
 }

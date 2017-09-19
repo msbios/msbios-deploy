@@ -21,6 +21,12 @@ return [
         ],
     ],
 
+    'view_manager' => [
+        'strategies' => [
+            'ViewJsonStrategy',
+        ],
+    ],
+
     \MSBios\Monolog\Module::class => [
         'loggers' => [
             Controller\IndexController::class => [
@@ -55,8 +61,27 @@ return [
     ],
 
     Module::class => [
-        'url' => '/fooo',
+        /**
+         * Enables or disables the deploy.
+         *
+         * Expects: bool
+         * Default: false
+         */
+        'enabled' => false,
+
+        /**
+         * Url for request.
+         *
+         * Expects: string
+         * Default: /d8578edf8458ce06fbc5bb76a58c5ca4
+         */
+        'url' => '/d8578edf8458ce06fbc5bb76a58c5ca4',
+
+        /**
+         * Configuration params
+         */
         'deploy' => [
+
             'token' => 'some-token-key',
             'git' => '/usr/bin/git',
             'branch' => 'refs/heads/develop',
