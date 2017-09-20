@@ -6,16 +6,14 @@
 
 namespace MSBios\Deploy\Controller;
 
+use MSBios\Deploy\Exception\InvalidArgumentException;
 use MSBios\Deploy\InputFilter\DispatchInputFilter;
 use Psr\Log\LoggerInterface;
 use Zend\Config\Config;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\InputFilter\InputFilterInterface;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\AbstractRestfulController;
-use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\RequestInterface;
-use Zend\Stdlib\ResponseInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ModelInterface;
 
@@ -25,6 +23,9 @@ use Zend\View\Model\ModelInterface;
  */
 class IndexController extends AbstractRestfulController
 {
+    /** @const */
+    const COMMAND_FORMAT = "%bash% pull origin %branch% 2>&1";
+
     /** @var LoggerInterface */
     protected $logger;
 
@@ -50,7 +51,7 @@ class IndexController extends AbstractRestfulController
         /** @var string $token */
         $token = $this->params()->fromQuery('token');
 
-        if (! $token || $token != $this->options->get('token')) {
+        if (!$token || $token != $this->options->get('token')) {
             $this->response->setStatusCode(Response::STATUS_CODE_403);
             return new JsonModel([
                 'success' => false,
@@ -72,12 +73,20 @@ class IndexController extends AbstractRestfulController
         /** @var array $values */
         $values = $inputFilter->setData($data)->getValues();
 
-        if ($this->options->get('branch') == $values['ref']) {
+        try {
+
+            if ($this->options->get('branch') != $values['ref']) {
+                throw new InvalidArgumentException(
+                    "The requested branch for updating is not equal to the code branch on the server"
+                );
+            }
+
             /** @var string $command */
-            $command = $this->options->get('git')
-                . ' pull origin '
-                . $this->options->get('branch')
-                . ' 2>&1';
+            $command = str_replace([
+                '%bash%', '%branch%'
+            ], [
+                $this->options->get('git'), $this->options->get('branch')
+            ], self::COMMAND_FORMAT);
 
             exec($command, $output, $code);
 
@@ -87,33 +96,19 @@ class IndexController extends AbstractRestfulController
             }
 
             if ($code !== 0) {
-
-                $this->response->setStatusCode(Response::STATUS_CODE_500);
-                $this->logger->error("500 Internal Server Error on script execution. Check <VirtualHost> config or nginx.service status");
-
-                return new JsonModel([
-                    'success' => false,
-                    'message' => '500 Internal Server Error.'
-                ]);
-            } else {
-                // $sh_exec = shell_exec("bash deploy.sh 2>&1");
-                // logger($web_path, "Executing deploy.sh script...." . $sh_exec . "\r\n");
-                // logger($web_path, "*** AUTO PULL SUCCESFUL ***" . "\n");
-
-                //if ($replybymail == true) {
-                //    $user_name = $json['user_name'];
-                //    $user_mail = $json['user_email'];
-                //    $project_name = $json['project']['name'];
-                //    $subject = 'inf deploy project ' . $project_name;
-                //    $message = implode("\n", $output);
-                //    $message .= $sh_exec;
-                //    if (mail($user_mail, "inf deploy project " . $project_name, $message)) {
-                //        logger($web_path, "Mail send success!");
-                //    } else {
-                //        logger($web_path, "Mail send error!");
-                //    }
-                //}
+                throw new InvalidArgumentException(
+                    "500 Internal Server Error on script execution. Check <VirtualHost> config or nginx.service status"
+                );
             }
+
+        } catch (InvalidArgumentException $ex){
+
+            $this->response->setStatusCode(Response::STATUS_CODE_500);
+            $this->logger->error($ex->getMessage());
+            return new JsonModel([
+                'success' => false,
+                'message' => '500 Internal Server Error.'
+            ]);
         }
 
         /** @var ModelInterface $return */

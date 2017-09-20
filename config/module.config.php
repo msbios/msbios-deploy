@@ -54,7 +54,7 @@ return [
             Controller\IndexController::class => [
                 'class' => \Monolog\Formatter\LineFormatter::class,
                 'args' => [
-                    'format' => "%datetime% - %channel% - %message% \n%extra% \n",
+                    'format' => "%level_name%:%datetime% - %message%\n",
                 ],
             ],
         ],
@@ -89,6 +89,7 @@ return [
              *
              * Expects: string|string[]
              * Default: 6c1f79403172f56b6dc5fe0cece03cd7
+             * TODO: array tokens in future
              */
             'token' => '6c1f79403172f56b6dc5fe0cece03cd7',
 
@@ -103,7 +104,7 @@ return [
             /**
              *
              * Expects: string
-             * Default: refs/heads/develop
+             * Default: refs/heads/master
              */
             'branch' => 'refs/heads/master',
 
@@ -112,7 +113,15 @@ return [
              * Expects: string
              * Default: N/A
              */
-            'commiter' => 'N/A'
+            'commiter' => 'N/A',
+
+            /**
+             *
+             * Expects: string
+             * Default: '%bash% pull origin %branch% 2>&1'
+             * TODO: in future
+             */
+            'command' => null
         ]
     ]
 ];
