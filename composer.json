@@ -41,6 +41,7 @@
       "phpunit"
     ],
     "serve": "php -S 0.0.0.0:3107 -t bin bin/msbios-deploy-module.php",
+    "dep": "./vendor/bin/dep",
     "commit": "git add . && git commit -a -m \"Lazy Composer Commiter\" && git push"
   }
 }
