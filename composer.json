@@ -24,7 +24,8 @@
     }
   },
   "require": {
-    "msbios/monolog": "~1.0"
+    "msbios/monolog": "~1.0",
+    "deployer/deployer": "^6.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^5.7",
