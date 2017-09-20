@@ -6,9 +6,12 @@
 
 namespace MSBios\Deploy\Controller;
 
+use MSBios\Deploy\InputFilter\DispatchInputFilter;
 use Psr\Log\LoggerInterface;
 use Zend\Config\Config;
 use Zend\Http\PhpEnvironment\Response;
+use Zend\InputFilter\InputFilterInterface;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\Mvc\MvcEvent;
 use Zend\Stdlib\RequestInterface;
@@ -40,39 +43,36 @@ class IndexController extends AbstractRestfulController
     }
 
     /**
-     * @param MvcEvent $e
-     * @return mixed
+     * @return JsonModel|ModelInterface
      */
-    public function onDispatch(MvcEvent $e)
+    public function dispatchAction()
     {
         /** @var string $token */
         $token = $this->params()->fromQuery('token');
 
         if (! $token || $token != $this->options->get('token')) {
-
-            /** @var ModelInterface $return */
-            $return = new JsonModel([
+            $this->response->setStatusCode(Response::STATUS_CODE_403);
+            return new JsonModel([
                 'success' => false,
                 'message' => 'Access Denied.'
             ]);
-
-            /** @var ResponseInterface $data */
-            $data = $e->getResponse();
-            $data->setStatusCode(Response::STATUS_CODE_403);
-
-            $e->setResult($return);
-            return $return;
         }
 
         /** @var RequestInterface $request */
-        $request = $e->getRequest();
+        $request = $this->getRequest();
 
         /** @var array $response */
         $data = ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON))
             ? $this->jsonDecode($request->getContent())
             : $request->getPost()->toArray();
 
-        if ($this->options->get('branch') == $data['ref']) {
+        /** @var InputFilterInterface $inputFilter */
+        $inputFilter = new DispatchInputFilter; // TODO: Move To ServiceLocator
+
+        /** @var array $values */
+        $values = $inputFilter->setData($data)->getValues();
+
+        if ($this->options->get('branch') == $values['ref']) {
             /** @var string $command */
             $command = $this->options->get('git')
                 . ' pull origin '
@@ -88,19 +88,13 @@ class IndexController extends AbstractRestfulController
 
             if ($code !== 0) {
 
-                /** @var ModelInterface $return */
-                $return = new JsonModel([
+                $this->response->setStatusCode(Response::STATUS_CODE_500);
+                $this->logger->error("500 Internal Server Error on script execution. Check <VirtualHost> config or nginx.service status");
+
+                return new JsonModel([
                     'success' => false,
                     'message' => '500 Internal Server Error.'
                 ]);
-
-                /** @var ResponseInterface $data */
-                $data = $e->getResponse();
-                $data->setStatusCode(Response::STATUS_CODE_500);
-                $this->logger->error("500 Internal Server Error on script execution. Check <VirtualHost> config or nginx.service status");
-
-                $e->setResult($return);
-                return $return;
             } else {
                 // $sh_exec = shell_exec("bash deploy.sh 2>&1");
                 // logger($web_path, "Executing deploy.sh script...." . $sh_exec . "\r\n");
@@ -123,12 +117,9 @@ class IndexController extends AbstractRestfulController
         }
 
         /** @var ModelInterface $return */
-        $return = new JsonModel([
+        return new JsonModel([
             'success' => true,
             'message' => 'Success Response.'
         ]);
-
-        $e->setResult($return);
-        return $return;
     }
 }

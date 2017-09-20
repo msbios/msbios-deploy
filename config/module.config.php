@@ -75,16 +75,43 @@ return [
          * Expects: string
          * Default: /d8578edf8458ce06fbc5bb76a58c5ca4
          */
-        'url' => '/d8578edf8458ce06fbc5bb76a58c5ca4',
+        'url' => '/d8578edf8458ce06fbc5bb76a58c5ca4[/]',
 
         /**
          * Configuration params
+         *
+         * Expects: array
          */
         'deploy' => [
 
-            'token' => 'some-token-key',
+            /**
+             * Application Requests Access Token.
+             *
+             * Expects: string|string[]
+             * Default: 6c1f79403172f56b6dc5fe0cece03cd7
+             */
+            'token' => '6c1f79403172f56b6dc5fe0cece03cd7',
+
+            /**
+             * The beginning of Git file
+             *
+             * Expects: string
+             * Default: /usr/bin/git
+             */
             'git' => '/usr/bin/git',
-            'branch' => 'refs/heads/develop',
+
+            /**
+             *
+             * Expects: string
+             * Default: refs/heads/develop
+             */
+            'branch' => 'refs/heads/master',
+
+            /**
+             *
+             * Expects: string
+             * Default: N/A
+             */
             'commiter' => 'N/A'
         ]
     ]

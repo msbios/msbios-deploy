@@ -8,10 +8,14 @@ namespace MSBios\Deploy;
 
 use MSBios\Deploy\Controller\IndexController;
 use MSBios\ModuleInterface;
+use Zend\Config\Config;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Method;
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\TreeRouteStack;
+use Zend\Router\RouteStackInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -41,25 +45,31 @@ class Module implements ModuleInterface, BootstrapListenerInterface
         /** @var ServiceLocatorInterface $serviceLocator */
         $serviceLocator = $e->getTarget()->getServicemanager();
 
-        /** @var Literal $route */
-        $route = Literal::factory([
-            'route' => $serviceLocator->get(self::class)->get('url'),
-            'defaults' => [
-                'controller' => IndexController::class
-            ],
-            'may_terminate' => true,
-            'child_routes' => [
-                'post' => [
-                    'type' => Method::class,
+        /** @var Config $config */
+        $config = $serviceLocator->get(self::class);
+
+        if ($config->get('enabled')) {
+
+            $serviceLocator->get('Router')->addRoutes([
+                self::class => [
+                    'type' => Segment::class,
                     'options' => [
-                        'verb' => 'post'
+                        'route' => $config->get('url'),
+                        'defaults' => [
+                            'controller' => IndexController::class,
+                            'action' => 'dispatch'
+                        ]
+                    ],
+                    'child_routes' => [
+                        [
+                            'type' => Method::class,
+                            'options' => [
+                                'verb' => 'post'
+                            ]
+                        ]
                     ]
                 ]
-            ]
-        ]);
-
-        /** @var ServiceLocatorInterface $serviceLocator */
-        $serviceLocator = $e->getTarget()->getServicemanager();
-        $serviceLocator->get('Router')->addRoute('deploy', $route);
+            ]);
+        }
     }
 }
