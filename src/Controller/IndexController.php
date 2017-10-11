@@ -52,7 +52,7 @@ class IndexController extends AbstractRestfulController
         /** @var string $token */
         $token = $this->params()->fromQuery('token');
 
-        if (!$token || $token != $this->options->get('token')) {
+        if (! $token || $token != $this->options->get('token')) {
             $this->response->setStatusCode(Response::STATUS_CODE_403);
             return new JsonModel([
                 'success' => false,
@@ -75,7 +75,6 @@ class IndexController extends AbstractRestfulController
         $values = $inputFilter->setData($data)->getValues();
 
         try {
-
             if ($this->options->get('branch') != $values['ref']) {
                 throw new InvalidArgumentException(
                     "The requested branch for updating is not equal to the code branch on the server"
@@ -101,8 +100,7 @@ class IndexController extends AbstractRestfulController
                     "500 Internal Server Error on script execution. Check <VirtualHost> config or nginx.service status"
                 );
             }
-
-        } catch (InvalidArgumentException $ex){
+        } catch (InvalidArgumentException $ex) {
 
             /** @var string $msg */
             $msg = $ex->getMessage();

@@ -11,11 +11,8 @@ use MSBios\ModuleInterface;
 use Zend\Config\Config;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
-use Zend\Router\Http\Literal;
 use Zend\Router\Http\Method;
 use Zend\Router\Http\Segment;
-use Zend\Router\Http\TreeRouteStack;
-use Zend\Router\RouteStackInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -49,7 +46,6 @@ class Module implements ModuleInterface, BootstrapListenerInterface
         $config = $serviceLocator->get(self::class);
 
         if ($config->get('enabled')) {
-
             $serviceLocator->get('Router')->addRoutes([
                 self::class => [
                     'type' => Segment::class,

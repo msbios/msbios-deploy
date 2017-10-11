@@ -26,5 +26,4 @@ class DispatchInputFilter extends InputFilter
             'name' => 'user_email'
         ]);
     }
-
 }
