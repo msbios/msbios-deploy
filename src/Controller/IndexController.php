@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 use Zend\Config\Config;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\InputFilter\InputFilterInterface;
+use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\Stdlib\RequestInterface;
 use Zend\View\Model\JsonModel;
@@ -103,11 +104,16 @@ class IndexController extends AbstractRestfulController
 
         } catch (InvalidArgumentException $ex){
 
+            /** @var string $msg */
+            $msg = $ex->getMessage();
+
             $this->response->setStatusCode(Response::STATUS_CODE_500);
-            $this->logger->error($ex->getMessage());
+            $this->logger->debug(Json::encode($values));
+            $this->logger->error($msg);
+
             return new JsonModel([
                 'success' => false,
-                'message' => '500 Internal Server Error.'
+                'message' => $msg
             ]);
         }
 
