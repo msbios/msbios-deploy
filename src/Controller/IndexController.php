@@ -68,6 +68,8 @@ class IndexController extends AbstractRestfulController
             ? $this->jsonDecode($request->getContent())
             : $request->getPost()->toArray();
 
+        $this->logger->debug($data);
+
         /** @var InputFilterInterface $inputFilter */
         $inputFilter = new DispatchInputFilter; // TODO: Move To ServiceLocator
 
