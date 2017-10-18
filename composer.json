@@ -38,7 +38,7 @@
     "cs-fix": "phpcbf",
     "test": [
       "@cs-check",
-      "phpunit"
+      "phpunit --colors=always"
     ],
     "serve": "php -S 0.0.0.0:3107 -t bin bin/msbios-deploy-module.php",
     "dep": "./vendor/bin/dep",
@@ -47,7 +47,9 @@
       "rm -Rf data/cache/*.php",
       "rm -Rf data/cache/*.dat",
       "rm -Rf data/logs/*.log"
-    ]
+    ],
+    "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+    "upload-coverage": "coveralls -v"
   },
   "extra": {
     "zf": {

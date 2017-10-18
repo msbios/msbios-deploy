@@ -8,10 +8,11 @@ namespace MSBios\Deploy;
 
 use MSBios\Deploy\Controller\IndexController;
 use MSBios\ModuleInterface;
-use MSBios\Monolog\LoggerManager;
-use Psr\Log\LoggerInterface;
 use Zend\Config\Config;
 use Zend\EventManager\EventInterface;
+use Zend\Loader\AutoloaderFactory;
+use Zend\Loader\StandardAutoloader;
+use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\Router\Http\Method;
 use Zend\Router\Http\Segment;
@@ -21,7 +22,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * Class Module
  * @package MSBios\Deploy
  */
-class Module implements ModuleInterface, BootstrapListenerInterface
+class Module implements ModuleInterface, BootstrapListenerInterface, AutoloaderProviderInterface
 {
     const VERSION = '0.0.1';
 
@@ -48,7 +49,6 @@ class Module implements ModuleInterface, BootstrapListenerInterface
         $config = $serviceLocator->get(self::class);
 
         if ($config->get('enabled')) {
-
             $serviceLocator->get('Router')->addRoutes([
                 self::class => [
                     'type' => Segment::class,
@@ -70,5 +70,21 @@ class Module implements ModuleInterface, BootstrapListenerInterface
                 ]
             ]);
         }
+    }
+
+    /**
+     * Return an array for passing to Zend\Loader\AutoloaderFactory.
+     *
+     * @return array
+     */
+    public function getAutoloaderConfig()
+    {
+        return [
+            AutoloaderFactory::STANDARD_AUTOLOADER => [
+                StandardAutoloader::LOAD_NS => [
+                    __NAMESPACE__ => __DIR__,
+                ],
+            ],
+        ];
     }
 }
