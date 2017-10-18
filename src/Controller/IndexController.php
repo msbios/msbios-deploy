@@ -49,10 +49,16 @@ class IndexController extends AbstractRestfulController
      */
     public function dispatchAction()
     {
+
+        $this->logger->info('Start Action');
+
         /** @var string $token */
         $token = $this->params()->fromQuery('token');
 
         if (! $token || $token != $this->options->get('token')) {
+
+            $this->logger->info('Token is not equal');
+
             $this->response->setStatusCode(Response::STATUS_CODE_403);
             return new JsonModel([
                 'success' => false,
@@ -67,8 +73,6 @@ class IndexController extends AbstractRestfulController
         $data = ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON))
             ? $this->jsonDecode($request->getContent())
             : $request->getPost()->toArray();
-
-        $this->logger->debug($data);
 
         /** @var InputFilterInterface $inputFilter */
         $inputFilter = new DispatchInputFilter; // TODO: Move To ServiceLocator
