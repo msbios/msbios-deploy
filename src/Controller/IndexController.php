@@ -49,16 +49,10 @@ class IndexController extends AbstractRestfulController
      */
     public function dispatchAction()
     {
-
-        $this->logger->info('Start Action');
-
         /** @var string $token */
         $token = $this->params()->fromQuery('token');
 
         if (! $token || $token != $this->options->get('token')) {
-
-            $this->logger->info('Token is not equal');
-
             $this->response->setStatusCode(Response::STATUS_CODE_403);
             return new JsonModel([
                 'success' => false,

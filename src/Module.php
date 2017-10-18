@@ -47,13 +47,8 @@ class Module implements ModuleInterface, BootstrapListenerInterface
         /** @var Config $config */
         $config = $serviceLocator->get(self::class);
 
-        /** @var LoggerInterface $logger */
-        $logger = $serviceLocator->get(LoggerManager::class)->get(IndexController::class);
-        $logger->info('Init in Module');
-
-
         if ($config->get('enabled')) {
-            $logger->info('enable module');
+
             $serviceLocator->get('Router')->addRoutes([
                 self::class => [
                     'type' => Segment::class,
@@ -74,8 +69,6 @@ class Module implements ModuleInterface, BootstrapListenerInterface
                     ]
                 ]
             ]);
-        } else {
-            $logger->info('disable module');
         }
     }
 }
