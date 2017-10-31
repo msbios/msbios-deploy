@@ -16,6 +16,7 @@ use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\Router\Http\Method;
 use Zend\Router\Http\Segment;
+use Zend\Router\Http\TreeRouteStack;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
@@ -24,7 +25,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class Module implements ModuleInterface, BootstrapListenerInterface, AutoloaderProviderInterface
 {
-    const VERSION = '0.0.1';
+    /** @const VERSION */
+    const VERSION = '1.0.9';
 
     /**
      * @return mixed
@@ -48,7 +50,10 @@ class Module implements ModuleInterface, BootstrapListenerInterface, AutoloaderP
         /** @var Config $config */
         $config = $serviceLocator->get(self::class);
 
-        if ($config->get('enabled')) {
+        /** @var TreeRouteStack $router */
+        $router = $serviceLocator->get('Router');
+
+        if ($config->get('enabled') && $router instanceof TreeRouteStack) {
             $serviceLocator->get('Router')->addRoutes([
                 self::class => [
                     'type' => Segment::class,
