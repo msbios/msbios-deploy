@@ -95,6 +95,20 @@ class IndexController extends AbstractRestfulController
                 $this->logger->info($item);
             }
 
+            /** @var string $filename */
+            $filename = realpath('./deploy.sh');
+
+            if (file_exists($filename)) {
+
+                /** @var string $output */
+                exec($filename, $output);
+
+                /** @var string $item */
+                foreach ($output as $item) {
+                    $this->logger->info($item);
+                }
+            }
+
             if ($code !== 0) {
                 throw new InvalidArgumentException(
                     "500 Internal Server Error on script execution. Check <VirtualHost> config or nginx.service status"
