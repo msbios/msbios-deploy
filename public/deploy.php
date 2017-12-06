@@ -58,5 +58,11 @@ try {
         ],
     ])->run();
 } catch (Exception $exception) {
+    http_response_code(404);
+
+    // /** @var array $messages */
+    // $messages = [
+    //     'Hey, Watson, where the hell are you ?! Iron and carry an ax, here the person is looking for the page, go to the admin - we will find.'
+    // ];
     die('Hey, Watson, where the hell are you ?! Iron and carry an ax, here the person is looking for the page, go to the admin - we will find.');
 }

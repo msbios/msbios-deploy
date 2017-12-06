@@ -7,33 +7,6 @@
 namespace MSBios\Deploy;
 
 return [
-    \MSBios\Monolog\Module::class => [
-        'loggers' => [
-            Controller\IndexController::class => [
-                'handlers' => [
-                ],
-                'processors' => [
-                ]
-            ],
-        ],
-
-        'handlers' => [
-            Controller\IndexController::class => [
-                'args' => [
-                    'stream' => './data/logs/deploy.handler.log'
-                ],
-            ],
-        ],
-
-        'formatters' => [
-            Controller\IndexController::class => [
-                'args' => [
-                    'format' => "%level_name%:%datetime% - %message%\n",
-                ],
-            ],
-        ],
-    ],
-
     Module::class => [
         /**
          * Enables or disables the deploy.
@@ -41,7 +14,7 @@ return [
          * Expects: bool
          * Default: false
          */
-        'enabled' => true,
+        'enabled' => false,
 
         /**
          * Url for request.
@@ -80,7 +53,7 @@ return [
              * Expects: string
              * Default: refs/heads/master
              */
-            'branch' => 'refs/heads/master',
+            'branch' => 'refs/heads/develop',
 
             /**
              *
