@@ -26,7 +26,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class Module implements ModuleInterface, BootstrapListenerInterface, AutoloaderProviderInterface
 {
     /** @const VERSION */
-    const VERSION = '1.0.12';
+    const VERSION = '1.0.13';
 
     /**
      * @return mixed

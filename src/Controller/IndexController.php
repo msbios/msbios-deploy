@@ -96,12 +96,12 @@ class IndexController extends AbstractRestfulController
             }
 
             /** @var string $filename */
-            $filename = realpath('./deploy.sh');
+            $filename = realpath('deploy.sh');
 
             if (file_exists($filename)) {
 
                 /** @var string $output */
-                exec($filename, $output);
+                exec("bash " . $filename, $output);
 
                 /** @var string $item */
                 foreach ($output as $item) {
