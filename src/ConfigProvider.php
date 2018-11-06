@@ -32,7 +32,8 @@ class ConfigProvider
     {
         return [
             'factories' => [
-                Module::class => Factory\ModuleFactory::class
+                Module::class =>
+                    Factory\ModuleFactory::class
             ],
         ];
     }

@@ -12,5 +12,5 @@ namespace MSBios\Deploy\Exception;
  */
 class InvalidArgumentException extends \InvalidArgumentException
 {
-
+    // ...
 }

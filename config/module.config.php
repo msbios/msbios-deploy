@@ -6,7 +6,39 @@
 
 namespace MSBios\Deploy;
 
+use Zend\Router\Http\Method;
+use Zend\Router\Http\Segment;
+
 return [
+
+    'router' => [
+        'routes' => [
+            'home' => [
+                'may_terminate' => true,
+                'child_routes' => [
+                    'deploy' => [
+                        'type' => Segment::class,
+                        'options' => [
+                            'route' => sprintf('%s[/]', md5(md5(time()) . time())), // need to change on static url
+                            'defaults' => [
+                                'controller' => Controller\IndexController::class,
+                                'action' => 'dispatch'
+                            ],
+                        ],
+                        'may_terminate' => true,
+                        'child_routes' => [
+                            [
+                                'type' => Method::class,
+                                'options' => [
+                                    'verb' => 'post'
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
 
     'controllers' => [
         'factories' => [
@@ -17,7 +49,8 @@ return [
 
     'service_manager' => [
         'factories' => [
-            Module::class => Factory\ModuleFactory::class
+            Module::class =>
+                Factory\ModuleFactory::class
         ],
     ],
 

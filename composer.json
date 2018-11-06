@@ -39,7 +39,7 @@
       "@cs-check",
       "phpunit --colors=always"
     ],
-    "serve": "php -S 0.0.0.0:3107 -t public public/deploy.php",
+    "serve": "php -S 0.0.0.0:3107 -t public public/index.php",
     "dep": "./vendor/bin/dep",
     "commit": "git add . && git commit -a -m \"Lazy Composer Commiter\" && git push",
     "cache":[
@@ -57,6 +57,6 @@
     }
   },
   "bin": [
-    "bin/deploy.sh"
+    "msbios-deploy.sh"
   ]
 }

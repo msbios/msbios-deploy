@@ -49,6 +49,9 @@ class IndexController extends AbstractRestfulController
      */
     public function dispatchAction()
     {
+
+
+
         /** @var string $token */
         $token = $this->params()->fromQuery('token');
 
