@@ -6,8 +6,11 @@
 
 namespace MSBios\Deploy;
 
+use MSBios\Deploy\Exception\Exception;
 use MSBios\Deploy\Exception\InvalidArgumentException;
 use MSBios\Monolog\LoggerManagerInterface;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\EventManagerInterface;
 
 /**
  * Class DeployManager
@@ -15,6 +18,9 @@ use MSBios\Monolog\LoggerManagerInterface;
  */
 class DeployManager implements DeployManagerInterface
 {
+    /** @var EventManagerInterface */
+    protected $eventManager;
+
     /** @var AdapterInterface */
     protected $adapter;
 
@@ -27,8 +33,11 @@ class DeployManager implements DeployManagerInterface
     /** @var  array */
     protected $commands;
 
-    /** @var array */
-    protected $output = [];
+    /** @const EVENT_REPORT */
+    const EVENT_REPORT = 'EVENT_REPORT';
+
+    /** @const EVENT_REPORT_ERROR */
+    const EVENT_REPORT_ERROR = 'EVENT_REPORT_ERROR';
 
     /**
      * DeployManager constructor.
@@ -39,6 +48,28 @@ class DeployManager implements DeployManagerInterface
     {
         $this->adapter = $adapter;
         $this->logger = $loggerManager;
+    }
+
+    /**
+     * @return EventManager|EventManagerInterface
+     */
+    public function getEventManager()
+    {
+        if (is_null($this->eventManager)) {
+            $this->eventManager = new EventManager;
+        }
+
+        return $this->eventManager;
+    }
+
+    /**
+     * @param $eventManager
+     * @return $this
+     */
+    public function setEventManager($eventManager)
+    {
+        $this->eventManager = $eventManager;
+        return $this;
     }
 
     /**
@@ -111,24 +142,34 @@ class DeployManager implements DeployManagerInterface
     }
 
     /**
-     * @return array
-     */
-    public function getOutput()
-    {
-        return $this->output;
-    }
-
-    /**
      * @param array|null $data
      * @return string
      */
     public function run(array $data = null)
     {
-        /** @var CommandInterface $command */
-        foreach ($this->commands as $command) {
-            $this->output[] = $command->run($data);
-        }
+        /** @var EventManagerInterface $eventManager */
+        $eventManager = $this->getEventManager();
 
-        $this->adapter->report($this, $data);
+        try {
+
+            /** @var array $output */
+            $output = [];
+
+            /** @var CommandInterface $command */
+            foreach ($this->commands as $command) {
+                $output[] = $command->run($data);
+            }
+
+            $eventManager->trigger(self::EVENT_REPORT, [
+                'deploy' => $this,
+                'message' => implode("\r\n", $output) ,
+                'data' => $data
+            ]);
+        } catch (Exception $exception) {
+            $eventManager->trigger(self::EVENT_REPORT_ERROR, [
+                'deploy' => $this,
+                'message' => $exception->getMessage()
+            ]);
+        }
     }
 }

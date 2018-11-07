@@ -65,7 +65,7 @@ class IndexController extends AbstractRestfulController
 
             return new JsonModel([
                 'success' => true,
-                'message' => 'Deploy was done.'
+                'message' => 'Deployment was successful.'
             ]);
         } catch (Exception $exception) {
             $this->response->setStatusCode(Response::STATUS_CODE_500);
