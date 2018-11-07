@@ -60,27 +60,11 @@ class IndexController extends AbstractRestfulController
             ? $this->jsonDecode($request->getContent())
             : $request->getPost()->toArray();
 
-        try {
-            $this->deployManager->run($data);
+        $this->deployManager->run($data);
 
-            return new JsonModel([
-                'success' => true,
-                'message' => 'Deployment was successful.'
-            ]);
-        } catch (Exception $exception) {
-            $this->response->setStatusCode(Response::STATUS_CODE_500);
-
-            //////////////////////////////////////////////////////////
-            $mail = $data['user_email'];
-            $project = $data['project']['name'];
-            $subject = "inf - Deploy Error Project {$project}";
-            mail($mail, $subject, $exception->getMessage());
-            //////////////////////////////////////////////////////////
-
-            return new JsonModel([
-                'success' => false,
-                'message' => $exception->getMessage()
-            ]);
-        }
+        return new JsonModel([
+            'success' => true,
+            'message' => 'Deployment was successful.'
+        ]);
     }
 }
