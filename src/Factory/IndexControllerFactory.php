@@ -7,8 +7,7 @@ namespace MSBios\Deploy\Factory;
 
 use Interop\Container\ContainerInterface;
 use MSBios\Deploy\Controller\IndexController;
-use MSBios\Deploy\Module;
-use MSBios\Monolog\LoggerManager;
+use MSBios\Deploy\DeployManager;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
 /**
@@ -21,13 +20,10 @@ class IndexControllerFactory implements FactoryInterface
      * @param ContainerInterface $container
      * @param string $requestedName
      * @param array|null $options
-     * @return IndexController|object
+     * @return IndexController
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return new IndexController(
-            $container->get(LoggerManager::class)->get($requestedName),
-            $container->get(Module::class)->get('deploy')
-        );
+        return new IndexController($container->get(DeployManager::class));
     }
 }

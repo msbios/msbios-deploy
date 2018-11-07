@@ -12,7 +12,7 @@ namespace MSBios\Deploy;
 interface AdapterInterface
 {
     /**
-     * @return mixed
+     * @return bool
      */
-    public function verify();
+    public function identity();
 }

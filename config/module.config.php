@@ -19,10 +19,10 @@ return [
                     'deploy' => [
                         'type' => Segment::class,
                         'options' => [
-                            'route' => sprintf('%s[/]', md5(md5(time()) . time())), // need to change on static url
+                            'route' => 'deploy[/]',
                             'defaults' => [
                                 'controller' => Controller\IndexController::class,
-                                'action' => 'dispatch'
+                                'action' => 'index'
                             ],
                         ],
                         'may_terminate' => true,
@@ -49,6 +49,10 @@ return [
 
     'service_manager' => [
         'factories' => [
+            DeployManager::class =>
+                Factory\DeployManagerFactory::class,
+            Adapter\GitLab::class =>
+                Factory\GitLabAdapterFactory::class,
             Module::class =>
                 Factory\ModuleFactory::class
         ],
@@ -97,64 +101,18 @@ return [
         /**
          * Enables or disables the deploy.
          *
-         * Expects: bool
-         * Default: false
-         */
-        'enabled' => false,
-
-        /**
-         * Url for request.
-         *
          * Expects: string
-         * Default: /d8578edf8458ce06fbc5bb76a58c5ca4
+         * Default: AdapterInterface
          */
-        'url' => '/d8578edf8458ce06fbc5bb76a58c5ca4[/]',
+        'adapter' => AdapterInterface::class,
 
         /**
-         * Configuration params
+         * Application Requests Access Token.
          *
-         * Expects: array
+         * Expects: string|string[]
+         * Default: 6c1f79403172f56b6dc5fe0cece03cd7
+         * TODO: array tokens in future
          */
-        'deploy' => [
-
-            /**
-             * Application Requests Access Token.
-             *
-             * Expects: string|string[]
-             * Default: 6c1f79403172f56b6dc5fe0cece03cd7
-             * TODO: array tokens in future
-             */
-            'token' => '6c1f79403172f56b6dc5fe0cece03cd7',
-
-            /**
-             * The beginning of Git file
-             *
-             * Expects: string
-             * Default: /usr/bin/git
-             */
-            'git' => '/usr/bin/git',
-
-            /**
-             *
-             * Expects: string
-             * Default: refs/heads/master
-             */
-            'branch' => 'refs/heads/master',
-
-            /**
-             *
-             * Expects: string
-             * Default: N/A
-             */
-            'commiter' => 'N/A',
-
-            /**
-             *
-             * Expects: string
-             * Default: '%bash% pull origin %branch% 2>&1'
-             * TODO: in future
-             */
-            'command' => null
-        ]
+        'token' => '',
     ]
 ];

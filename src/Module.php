@@ -23,7 +23,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  * Class Module
  * @package MSBios\Deploy
  */
-class Module implements ModuleInterface, BootstrapListenerInterface, AutoloaderProviderInterface
+class Module implements ModuleInterface, AutoloaderProviderInterface
 {
     /** @const VERSION */
     const VERSION = '1.0.13';
@@ -44,37 +44,37 @@ class Module implements ModuleInterface, BootstrapListenerInterface, AutoloaderP
      */
     public function onBootstrap(EventInterface $e)
     {
-        /** @var ServiceLocatorInterface $serviceLocator */
-        $serviceLocator = $e->getTarget()->getServicemanager();
-
-        /** @var Config $config */
-        $config = $serviceLocator->get(self::class);
-
-        /** @var TreeRouteStack $router */
-        $router = $serviceLocator->get('Router');
-
-        if ($config->get('enabled') && $router instanceof TreeRouteStack) {
-            $serviceLocator->get('Router')->addRoutes([
-                self::class => [
-                    'type' => Segment::class,
-                    'options' => [
-                        'route' => $config->get('url'),
-                        'defaults' => [
-                            'controller' => IndexController::class,
-                            'action' => 'dispatch'
-                        ]
-                    ],
-                    'child_routes' => [
-                        [
-                            'type' => Method::class,
-                            'options' => [
-                                'verb' => 'post'
-                            ]
-                        ]
-                    ]
-                ]
-            ]);
-        }
+        ///** @var ServiceLocatorInterface $serviceLocator */
+        //$serviceLocator = $e->getTarget()->getServicemanager();
+        //
+        ///** @var Config $config */
+        //$config = $serviceLocator->get(self::class);
+        //
+        ///** @var TreeRouteStack $router */
+        //$router = $serviceLocator->get('Router');
+        //
+        //if ($config->get('enabled') && $router instanceof TreeRouteStack) {
+        //    $serviceLocator->get('Router')->addRoutes([
+        //        self::class => [
+        //            'type' => Segment::class,
+        //            'options' => [
+        //                'route' => $config->get('url'),
+        //                'defaults' => [
+        //                    'controller' => IndexController::class,
+        //                    'action' => 'dispatch'
+        //                ]
+        //            ],
+        //            'child_routes' => [
+        //                [
+        //                    'type' => Method::class,
+        //                    'options' => [
+        //                        'verb' => 'post'
+        //                    ]
+        //                ]
+        //            ]
+        //        ]
+        //    ]);
+        //}
     }
 
     /**

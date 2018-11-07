@@ -3,27 +3,30 @@
  * @access protected
  * @author Judzhin Miles <info[woof-woof]msbios.com>
  */
-
 namespace MSBios\Deploy\Factory;
 
 use Interop\Container\ContainerInterface;
-use MSBios\Deploy\Module;
+use MSBios\Deploy\Adapter\GitLab;
+use Zend\Http\Request;
 use Zend\ServiceManager\Factory\FactoryInterface;
+use Zend\Stdlib\MessageInterface;
 
 /**
- * Class ModuleFactory
+ * Class GitLabAdapterFactory
  * @package MSBios\Deploy\Factory
  */
-class ModuleFactory implements FactoryInterface
+class GitLabAdapterFactory implements FactoryInterface
 {
     /**
      * @param ContainerInterface $container
      * @param string $requestedName
      * @param array|null $options
-     * @return mixed
+     * @return GitLab
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        return $container->get('config')[Module::class];
+        /** @var MessageInterface|Request $request */
+        $request = $container->get('Request');
+        return new GitLab($request->getHeaders());
     }
 }

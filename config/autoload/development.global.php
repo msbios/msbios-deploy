@@ -6,6 +6,8 @@
 
 namespace MSBios\Deploy;
 
+use MSBios\Deploy\Adapter\GitLab;
+
 return [
 
     'router' => [
@@ -16,7 +18,6 @@ return [
                         'options' => [
                             'route' => 'deploy[/]',
                         ],
-
                     ],
                 ],
             ],
@@ -44,12 +45,7 @@ return [
     ],
 
     Module::class => [
-        /**
-         * Enables or disables the deploy.
-         *
-         * Expects: bool
-         * Default: false
-         */
-        'enabled' => true
+        'adapter' => GitLab::class,
+        'token' => 'ed076287532e86365e841e92bfc50d8c'
     ]
 ];
