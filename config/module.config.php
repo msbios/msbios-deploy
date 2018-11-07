@@ -124,13 +124,13 @@ return [
             [
                 'type' => Command::class,
                 'options' => [
-                    'command' => "/usr/bin/git pull origin develop 2>&1",
+                    'command' => "/usr/bin/git pull origin master 2>&1",
                 ]
             ],
             [
                 'type' => Shell::class,
                 'options' => [
-                    'command' => "/usr/bin/git pull origin develop 2>&1",
+                    'command' => "bash msbios-deploy.sh 2>&1",
                 ]
             ]
         ]
