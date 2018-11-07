@@ -55,7 +55,7 @@ class IndexController extends AbstractRestfulController
             ]);
         }
 
-        /** @var MessageInterface $request */
+        /** @var MessageInterface|Request $request */
         $request = $this->getRequest();
 
         /** @var array $response */
@@ -63,7 +63,7 @@ class IndexController extends AbstractRestfulController
             ? $this->jsonDecode($request->getContent())
             : $request->getPost()->toArray();
 
-        $this->deployManager->run($data);
+        $result = $this->deployManager->run($data);
 
         return $this->notFoundAction();
 

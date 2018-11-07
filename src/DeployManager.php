@@ -27,6 +27,9 @@ class DeployManager implements DeployManagerInterface
     /** @var  array */
     protected $commands;
 
+    /** @var array */
+    protected $output = [];
+
     /**
      * DeployManager constructor.
      * @param AdapterInterface $adapter
@@ -60,7 +63,8 @@ class DeployManager implements DeployManagerInterface
      * @param CommandInterface $command
      * @return $this
      */
-    public function addCommand(CommandInterface $command) {
+    public function addCommand(CommandInterface $command)
+    {
         $this->commands[] = $command;
         return $this;
     }
@@ -69,7 +73,8 @@ class DeployManager implements DeployManagerInterface
      * @param array $commands
      * @return $this
      */
-    public function addCommands(array $commands) {
+    public function addCommands(array $commands)
+    {
 
         /** @var array $command */
         foreach ($commands as $command) {
@@ -106,21 +111,24 @@ class DeployManager implements DeployManagerInterface
     }
 
     /**
+     * @return array
+     */
+    public function getOutput()
+    {
+        return $this->output;
+    }
+
+    /**
      * @param array|null $data
+     * @return string
      */
     public function run(array $data = null)
     {
-        /** @var array $output */
-        $output = [];
-
         /** @var CommandInterface $command */
         foreach ($this->commands as $command) {
-            $output[] = $command->run($data);
+            $this->output[] = $command->run($data);
         }
 
-        var_dump([
-            __METHOD__, $output
-        ]);
-        die();
+        $this->adapter->report($this, $data);
     }
 }
