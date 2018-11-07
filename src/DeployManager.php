@@ -168,7 +168,8 @@ class DeployManager implements DeployManagerInterface
         } catch (Exception $exception) {
             $eventManager->trigger(self::EVENT_REPORT_ERROR, [
                 'deploy' => $this,
-                'message' => $exception->getMessage()
+                'message' => $exception->getMessage(),
+                'data' => $data
             ]);
         }
     }
