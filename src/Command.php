@@ -4,6 +4,7 @@
  * @author Judzhin Miles <info[woof-woof]msbios.com>
  */
 namespace MSBios\Deploy;
+
 use MSBios\Deploy\Exception\Exception;
 
 /**
@@ -12,15 +13,8 @@ use MSBios\Deploy\Exception\Exception;
  */
 class Command implements CommandInterface
 {
-    /**
-     * @var
-     */
+    /** @var mixed */
     protected $command;
-
-    /**
-     * @var
-     */
-    protected $output;
 
     /**
      * Command constructor.
@@ -32,36 +26,30 @@ class Command implements CommandInterface
     }
 
     /**
-     * @return array
-     */
-    public function getOutput()
-    {
-        return $this->output;
-    }
-
-    /**
      * @param array|null $data
+     * @return string
      * @throws Exception
      */
     public function run(array $data = null)
     {
-        /** @var integer $return_var */
-        $return_var = null;
-        exec($this->command, $this->output, $return_var);
-
-        var_dump([$this->output, $return_var]); die();
+        /** @var null $output */
+        $output = $return_var = null;
+        exec($this->command, $output, $return_var);
 
         if (0 !== $return_var) {
             header("{$_SERVER['SERVER_PROTOCOL']} 500 Internal Server Error", true, 500);
             throw new Exception("Something happened wrong with '{$this->command}'\r\n");
         }
+
+        return implode("\r\n", $output);
     }
 
     /**
      * @param array $options
      * @return Command
      */
-    public static function factory(array $options) {
+    public static function factory(array $options)
+    {
         return new self($options);
     }
 }

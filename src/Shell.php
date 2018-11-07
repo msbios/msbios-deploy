@@ -11,6 +11,19 @@ namespace MSBios\Deploy;
  */
 class Shell implements CommandInterface
 {
+
+    /** @var mixed */
+    protected $command;
+
+    /**
+     * Command constructor.
+     * @param array $options
+     */
+    public function __construct(array $options)
+    {
+        $this->command = $options['command'];
+    }
+
     /**
      * @var array
      */
@@ -29,13 +42,8 @@ class Shell implements CommandInterface
      */
     public function run(array $data = null)
     {
-        //if (isset($options['shell']) && $options['shell']) {
-        //    /** @var string $result */
-        //    $result = shell_exec($command);
-        //    file_put_contents(FILENAME, "$result\r\n");
-        //    $output[] = $result;
-        //    continue;
-        //}
+        /** @var string $result */
+        return shell_exec($this->command);
     }
 
     /**
