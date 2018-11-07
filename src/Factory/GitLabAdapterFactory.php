@@ -7,7 +7,8 @@ namespace MSBios\Deploy\Factory;
 
 use Interop\Container\ContainerInterface;
 use MSBios\Deploy\Adapter\GitLab;
-use Zend\Http\Request;
+use Zend\Console\Request;
+use Zend\Http\Request as HttpRequest;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\Stdlib\MessageInterface;
 
@@ -25,8 +26,9 @@ class GitLabAdapterFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
+        // /** @var MessageInterface|HttpRequest $request */
         /** @var MessageInterface|Request $request */
         $request = $container->get('Request');
-        return new GitLab($request->getHeaders());
+        return new GitLab($request);
     }
 }

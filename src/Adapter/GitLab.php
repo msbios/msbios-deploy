@@ -6,13 +6,11 @@
 namespace MSBios\Deploy\Adapter;
 
 use MSBios\Deploy\AdapterInterface;
-use MSBios\Deploy\DeployManagerInterface;
+use Zend\Console\Console;
+use Zend\Console\Request as ConsoleRequest;
 use Zend\Http\Header\GenericHeader;
 use Zend\Http\Header\HeaderInterface;
-use Zend\Http\Headers;
-use Zend\Mail\Message;
-use Zend\Mail\Transport\Sendmail;
-use Zend\Mail\Transport\TransportInterface;
+use Zend\Stdlib\MessageInterface;
 
 /**
  * Class GitLab
@@ -20,25 +18,36 @@ use Zend\Mail\Transport\TransportInterface;
  */
 class GitLab implements AdapterInterface
 {
-    /** @var  Headers */
-    protected $headers;
+
+    const DEFAULT_KEY_NAME = 'X-Gitlab-Token';
+
+    /** @var  MessageInterface|ConsoleRequest */
+    protected $request;
 
     /**
      * GitLab constructor.
-     * @param Headers $headers
+     * @param MessageInterface $request
      */
-    public function __construct(Headers $headers)
+    public function __construct(MessageInterface $request)
     {
-        $this->headers = $headers;
+        $this->request = $request;
     }
 
     /**
-     * @return string
+     * @return bool|mixed|string
      */
     public function identity()
     {
-        /** @var HeaderInterface|GenericHeader $genericHeader */
-        $genericHeader = $this->headers->get('X-Gitlab-Token');
-        return $genericHeader->getFieldValue();
+        if (! Console::isConsole()) {
+            /** @var HeaderInterface|GenericHeader $genericHeader */
+            $genericHeader = $this->request
+                ->getHeaders()
+                ->get(self::DEFAULT_KEY_NAME);
+
+            return $genericHeader->getFieldValue();
+        }
+
+        return $this->request
+            ->getParam(self::DEFAULT_KEY_NAME);
     }
 }
