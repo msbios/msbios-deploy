@@ -121,18 +121,18 @@ return [
          * Default: []
          */
         'commands' => [
-            [
-                'type' => Command::class,
-                'options' => [
-                    'command' => "/usr/bin/git pull origin master 2>&1",
-                ]
-            ],
-            [
-                'type' => Shell::class,
-                'options' => [
-                    'command' => "bash msbios-deploy.sh 2>&1",
-                ]
-            ]
+            // [
+            //     'type' => Command::class,
+            //     'options' => [
+            //         'command' => "/usr/bin/git pull origin master 2>&1",
+            //     ]
+            // ],
+            // [
+            //     'type' => Shell::class,
+            //     'options' => [
+            //         'command' => "bash msbios-deploy.sh 2>&1",
+            //     ]
+            // ]
         ]
     ]
 ];

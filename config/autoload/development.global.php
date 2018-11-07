@@ -9,21 +9,6 @@ namespace MSBios\Deploy;
 use MSBios\Deploy\Adapter\GitLab;
 
 return [
-
-    'router' => [
-        'routes' => [
-            'home' => [
-                'child_routes' => [
-                    'deploy' => [
-                        'options' => [
-                            'route' => 'deploy[/]',
-                        ],
-                    ],
-                ],
-            ],
-        ],
-    ],
-
     \MSBios\Assetic\Module::class => [
         'maps' => [
             // css
