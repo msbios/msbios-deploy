@@ -98,7 +98,7 @@ class DeployManager implements DeployManagerInterface
         $result = ($identity == $this->token);
 
         $this->getEventManager()->trigger(self::EVENT_VERIFY, $this, [
-            'message' => implode('\r\n', [
+            'message' => implode("\r\n", [
                 "Verified information:",
                 sprintf("Adapter identifier information: %s", $identity),
                 sprintf("Configuration token: %s", $this->token),
