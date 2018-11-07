@@ -39,7 +39,7 @@ return [
                     'command' => "/usr/bin/git pull origin master 2>&1",
                 ]
             ],
-            [
+            'Test Call Bash Script' => [
                 'type' => Shell::class,
                 'options' => [
                     'command' => "bash msbios-deploy.sh 2>&1",

@@ -11,6 +11,7 @@ use MSBios\Deploy\Exception\InvalidArgumentException;
 use MSBios\Monolog\LoggerManagerInterface;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
+use Zend\Http\PhpEnvironment\Response;
 
 /**
  * Class DeployManager
@@ -166,6 +167,7 @@ class DeployManager implements DeployManagerInterface
                 'data' => $data
             ]);
         } catch (Exception $exception) {
+            header("500 Internal Server Error", true, Response::STATUS_CODE_500);
             $eventManager->trigger(self::EVENT_REPORT_ERROR, [
                 'deploy' => $this,
                 'message' => $exception->getMessage(),
