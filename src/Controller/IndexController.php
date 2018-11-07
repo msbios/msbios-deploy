@@ -7,8 +7,6 @@
 namespace MSBios\Deploy\Controller;
 
 use MSBios\Deploy\DeployManagerInterface;
-use MSBios\Deploy\Exception\Exception;
-use Zend\Http\PhpEnvironment\Response;
 use Zend\Http\Request;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\Stdlib\MessageInterface;
@@ -20,9 +18,6 @@ use Zend\View\Model\JsonModel;
  */
 class IndexController extends AbstractRestfulController
 {
-    /** @const */
-    const COMMAND_FORMAT = "%bash% pull origin %branch% 2>&1";
-
     /** @var  DeployManagerInterface */
     protected $deployManager;
 
@@ -43,15 +38,14 @@ class IndexController extends AbstractRestfulController
         /** @var MessageInterface|Request $request */
         $request = $this->getRequest();
 
-        if (! $request->isPost()) {
+        if (!$request->isPost()) {
             return $this->notFoundAction();
         }
 
-        if (! $this->deployManager->verify()) {
-            $this->response->setStatusCode(Response::STATUS_CODE_403);
+        if (!$this->deployManager->verify()) {
             return new JsonModel([
                 'success' => false,
-                'message' => 'Access Denied.'
+                'message' => 'Verified token is not allowed. Access Denied'
             ]);
         }
 

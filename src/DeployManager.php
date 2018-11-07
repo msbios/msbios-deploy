@@ -34,6 +34,9 @@ class DeployManager implements DeployManagerInterface
     /** @var  array */
     protected $commands;
 
+    /** @const EVENT_VERIFY */
+    const EVENT_VERIFY = 'EVENT_VERIFY';
+
     /** @const EVENT_REPORT */
     const EVENT_REPORT = 'EVENT_REPORT';
 
@@ -88,7 +91,23 @@ class DeployManager implements DeployManagerInterface
      */
     public function verify()
     {
-        return $this->adapter->identity() == $this->token;
+        /** @var string $identity */
+        $identity = $this->adapter->identity();
+
+        /** @var boolean $result */
+        $result = ($identity == $this->token);
+
+        $this->getEventManager()->trigger(self::EVENT_VERIFY, [
+            'deploy' => $this,
+            'message' => implode('\r\n', [
+                "Verified information:",
+                sprintf("Adapter identifier information: %s", $identity),
+                sprintf("Configuration token: %s", $this->token),
+                sprintf("Result of checking: %s", $result),
+            ])
+        ]);
+
+        return $result;
     }
 
     /**
@@ -166,6 +185,7 @@ class DeployManager implements DeployManagerInterface
                 'message' => implode("\r\n", $output) ,
                 'data' => $data
             ]);
+
         } catch (Exception $exception) {
             header("500 Internal Server Error", true, Response::STATUS_CODE_500);
             $eventManager->trigger(self::EVENT_REPORT_ERROR, [
