@@ -10,7 +10,7 @@ namespace MSBios\Deploy;
  * Interface DeployManagerInterface
  * @package MSBios\Deploy
  */
-interface DeployManagerInterface
+interface DeployManagerInterface extends CommandInterface
 {
     /**
      * @return mixed

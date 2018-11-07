@@ -6,6 +6,7 @@
 
 namespace MSBios\Deploy;
 
+use MSBios\Deploy\Exception\InvalidArgumentException;
 use MSBios\Monolog\LoggerManagerInterface;
 
 /**
@@ -22,6 +23,9 @@ class DeployManager implements DeployManagerInterface
 
     /** @var string */
     protected $token;
+
+    /** @var  array */
+    protected $commands;
 
     /**
      * DeployManager constructor.
@@ -50,5 +54,73 @@ class DeployManager implements DeployManagerInterface
     public function verify()
     {
         return $this->adapter->identity() == $this->token;
+    }
+
+    /**
+     * @param CommandInterface $command
+     * @return $this
+     */
+    public function addCommand(CommandInterface $command) {
+        $this->commands[] = $command;
+        return $this;
+    }
+
+    /**
+     * @param array $commands
+     * @return $this
+     */
+    public function addCommands(array $commands) {
+
+        /** @var array $command */
+        foreach ($commands as $command) {
+            if (!isset($command['type'])) {
+                throw new InvalidArgumentException('Missing "type" option');
+            }
+
+            /** @var string $commandName */
+            $commandName = $command['type'];
+
+            //if (! class_exists($commandName)) {
+            //    throw new ServiceNotCreatedException(sprintf(
+            //        '%s: failed retrieving invokable class "%s"; class does not exist',
+            //        __CLASS__,
+            //        $routeName
+            //    ));
+            //}
+
+            //if (! is_subclass_of($routeName, RouteInterface::class)) {
+            //    throw new ServiceNotCreatedException(sprintf(
+            //        '%s: failed retrieving invokable class "%s"; class does not implement %s',
+            //        __CLASS__,
+            //        $routeName,
+            //        RouteInterface::class
+            //    ));
+            //}
+
+            /** @var CommandInterface $instance */
+            $instance = $commandName::factory($command['options']);
+            $this->addCommand($instance);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param array|null $data
+     */
+    public function run(array $data = null)
+    {
+        /** @var array $output */
+        $output = [];
+
+        /** @var CommandInterface $command */
+        foreach ($this->commands as $command) {
+            $output[] = $command->run($data);
+        }
+
+        var_dump([
+            __METHOD__, $output
+        ]);
+        die();
     }
 }

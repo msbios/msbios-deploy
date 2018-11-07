@@ -40,12 +40,14 @@ class DeployManagerFactory implements FactoryInterface
         /** @var AdapterInterface $adapter */
         $adapter = $container->get($config['adapter']);
 
-        /** @var DeployManagerInterface $deployManager */
+        /** @var DeployManagerInterface|DeployManager $deployManager */
         $deployManager = new DeployManager(
             $adapter, $container->get(LoggerManager::class)
         );
 
-        $deployManager->setToken($config['token']);
+        $deployManager
+            ->addCommands($config['commands'])
+            ->setToken($config['token']);
 
         return $deployManager;
     }

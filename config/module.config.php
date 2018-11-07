@@ -114,5 +114,25 @@ return [
          * TODO: array tokens in future
          */
         'token' => '',
+
+        /**
+         *
+         * Expects: array
+         * Default: []
+         */
+        'commands' => [
+            [
+                'type' => Command::class,
+                'options' => [
+                    'command' => "/usr/bin/git pull origin develop 2>&1",
+                ]
+            ],
+            [
+                'type' => Shell::class,
+                'options' => [
+                    'command' => "/usr/bin/git pull origin develop 2>&1",
+                ]
+            ]
+        ]
     ]
 ];

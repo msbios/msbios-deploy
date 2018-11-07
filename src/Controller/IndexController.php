@@ -12,9 +12,11 @@ use MSBios\Deploy\InputFilter\DispatchInputFilter;
 use Psr\Log\LoggerInterface;
 use Zend\Config\Config;
 use Zend\Http\PhpEnvironment\Response;
+use Zend\Http\Request;
 use Zend\InputFilter\InputFilterInterface;
 use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractRestfulController;
+use Zend\Stdlib\MessageInterface;
 use Zend\Stdlib\RequestInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ModelInterface;
@@ -52,6 +54,16 @@ class IndexController extends AbstractRestfulController
                 'message' => 'Access Denied.'
             ]);
         }
+
+        /** @var MessageInterface $request */
+        $request = $this->getRequest();
+
+        /** @var array $response */
+        $data = ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON))
+            ? $this->jsonDecode($request->getContent())
+            : $request->getPost()->toArray();
+
+        $this->deployManager->run($data);
 
         return $this->notFoundAction();
 
