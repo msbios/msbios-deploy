@@ -31,7 +31,7 @@ class DeployManagerFactory implements FactoryInterface
         /** @var array $config */
         $config = $container->get(Module::class);
 
-        if (!$container->has($config['adapter'])) {
+        if (! $container->has($config['adapter'])) {
             throw new ServiceNotFoundException(
                 sprintf('Service adapter with name %s not found!', $config['adapter'])
             );
@@ -42,7 +42,8 @@ class DeployManagerFactory implements FactoryInterface
 
         /** @var DeployManagerInterface|DeployManager $deployManager */
         $deployManager = new DeployManager(
-            $adapter, $container->get(LoggerManager::class)
+            $adapter,
+            $container->get(LoggerManager::class)
         );
 
         $deployManager

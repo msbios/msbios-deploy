@@ -78,7 +78,7 @@ class DeployManager implements DeployManagerInterface
 
         /** @var array $command */
         foreach ($commands as $command) {
-            if (!isset($command['type'])) {
+            if (! isset($command['type'])) {
                 throw new InvalidArgumentException('Missing "type" option');
             }
 

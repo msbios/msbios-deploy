@@ -50,7 +50,8 @@ class Shell implements CommandInterface
      * @param array $options
      * @return Shell
      */
-    public static function factory(array $options) {
+    public static function factory(array $options)
+    {
         return new self($options);
     }
 }

@@ -7,6 +7,7 @@
 namespace MSBios\Deploy\Controller;
 
 use MSBios\Deploy\DeployManagerInterface;
+use MSBios\Deploy\Exception\Exception;
 use MSBios\Deploy\Exception\InvalidArgumentException;
 use MSBios\Deploy\InputFilter\DispatchInputFilter;
 use Psr\Log\LoggerInterface;
@@ -47,7 +48,7 @@ class IndexController extends AbstractRestfulController
      */
     public function indexAction()
     {
-        if (!$this->deployManager->verify()) {
+        if (! $this->deployManager->verify()) {
             $this->response->setStatusCode(Response::STATUS_CODE_403);
             return new JsonModel([
                 'success' => false,
@@ -63,94 +64,19 @@ class IndexController extends AbstractRestfulController
             ? $this->jsonDecode($request->getContent())
             : $request->getPost()->toArray();
 
-        $result = $this->deployManager->run($data);
+        try {
+            $this->deployManager->run($data);
 
-        return $this->notFoundAction();
-
-        ///** @var string $token */
-        //$token = $this->params()->fromQuery('token');
-        //
-        //if (! $token || $token != $this->options->get('token')) {
-        //    $this->response->setStatusCode(Response::STATUS_CODE_403);
-        //    return new JsonModel([
-        //        'success' => false,
-        //        'message' => 'Access Denied.'
-        //    ]);
-        //}
-        //
-        ///** @var RequestInterface $request */
-        //$request = $this->getRequest();
-        //
-        ///** @var array $response */
-        //$data = ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON))
-        //    ? $this->jsonDecode($request->getContent())
-        //    : $request->getPost()->toArray();
-        //
-        ///** @var InputFilterInterface $inputFilter */
-        //$inputFilter = new DispatchInputFilter; // TODO: Move To ServiceLocator
-        //
-        ///** @var array $values */
-        //$values = $inputFilter->setData($data)->getValues();
-        //
-        //try {
-        //    if ($this->options->get('branch') != $values['ref']) {
-        //        throw new InvalidArgumentException(
-        //            "The requested branch for updating is not equal to the code branch on the server"
-        //        );
-        //    }
-        //
-        //    /** @var string $command */
-        //    $command = str_replace([
-        //        '%bash%', '%branch%'
-        //    ], [
-        //        $this->options->get('git'), $this->options->get('branch')
-        //    ], self::COMMAND_FORMAT);
-        //
-        //    exec($command, $output, $code);
-        //
-        //    /** @var string $item */
-        //    foreach ($output as $item) {
-        //        $this->logger->info($item);
-        //    }
-        //
-        //    /** @var string $filename */
-        //    $filename = realpath('deploy.sh');
-        //
-        //    if (file_exists($filename)) {
-        //
-        //        /** @var string $output */
-        //        exec("bash " . $filename, $output);
-        //
-        //        /** @var string $item */
-        //        foreach ($output as $item) {
-        //            $this->logger->info($item);
-        //        }
-        //    }
-        //
-        //    if ($code !== 0) {
-        //        throw new InvalidArgumentException(
-        //            "500 Internal Server Error on script execution. Check <VirtualHost> config or nginx.service status"
-        //        );
-        //    }
-        //} catch (InvalidArgumentException $ex) {
-        //
-        //    /** @var string $msg */
-        //    $msg = $ex->getMessage();
-        //
-        //    $this->response->setStatusCode(Response::STATUS_CODE_500);
-        //    $this->logger->debug(Json::encode($values));
-        //    $this->logger->error($msg);
-        //
-        //    return new JsonModel([
-        //        'success' => false,
-        //        'message' => $msg
-        //    ]);
-        //}
-        //
-        ///** @var ModelInterface $return */
-        //return new JsonModel([
-        //    'success' => true,
-        //    'message' => 'Success Response.'
-        //]);
+            return new JsonModel([
+                'success' => true,
+                'message' => 'Deploy was done.'
+            ]);
+        } catch (Exception $exception) {
+            $this->response->setStatusCode(Response::STATUS_CODE_500);
+            return new JsonModel([
+                'success' => false,
+                'message' => $exception->getMessage()
+            ]);
+        }
     }
 }
