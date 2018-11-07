@@ -8,19 +8,11 @@ namespace MSBios\Deploy\Controller;
 
 use MSBios\Deploy\DeployManagerInterface;
 use MSBios\Deploy\Exception\Exception;
-use MSBios\Deploy\Exception\InvalidArgumentException;
-use MSBios\Deploy\InputFilter\DispatchInputFilter;
-use Psr\Log\LoggerInterface;
-use Zend\Config\Config;
 use Zend\Http\PhpEnvironment\Response;
 use Zend\Http\Request;
-use Zend\InputFilter\InputFilterInterface;
-use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\Stdlib\MessageInterface;
-use Zend\Stdlib\RequestInterface;
 use Zend\View\Model\JsonModel;
-use Zend\View\Model\ModelInterface;
 
 /**
  * Class IndexController
@@ -77,6 +69,14 @@ class IndexController extends AbstractRestfulController
             ]);
         } catch (Exception $exception) {
             $this->response->setStatusCode(Response::STATUS_CODE_500);
+
+            //////////////////////////////////////////////////////////
+            $mail = $data['user_email'];
+            $project = $data['project']['name'];
+            $subject = "inf - Deploy Error Project {$project}";
+            mail($mail, $subject, $exception->getMessage());
+            //////////////////////////////////////////////////////////
+
             return new JsonModel([
                 'success' => false,
                 'message' => $exception->getMessage()
