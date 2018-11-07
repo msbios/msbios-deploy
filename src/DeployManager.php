@@ -77,6 +77,24 @@ class DeployManager implements DeployManagerInterface
     }
 
     /**
+     * @return AdapterInterface
+     */
+    public function getAdapter(): AdapterInterface
+    {
+        return $this->adapter;
+    }
+
+    /**
+     * @param AdapterInterface $adapter
+     * @return DeployManagerInterface
+     */
+    public function setAdapter(AdapterInterface $adapter): DeployManagerInterface
+    {
+        $this->adapter = $adapter;
+        return $this;
+    }
+
+    /**
      * @param $token
      * @return $this
      */

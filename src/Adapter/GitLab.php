@@ -3,13 +3,14 @@
  * @access protected
  * @author Judzhin Miles <info[woof-woof]msbios.com>
  */
+
 namespace MSBios\Deploy\Adapter;
 
 use MSBios\Deploy\AdapterInterface;
-use Zend\Console\Console;
 use Zend\Console\Request as ConsoleRequest;
 use Zend\Http\Header\GenericHeader;
 use Zend\Http\Header\HeaderInterface;
+use Zend\Http\Request as HttpRequest;
 use Zend\Stdlib\MessageInterface;
 
 /**
@@ -26,11 +27,21 @@ class GitLab implements AdapterInterface
 
     /**
      * GitLab constructor.
-     * @param MessageInterface $request
+     * @param MessageInterface|null $request
      */
-    public function __construct(MessageInterface $request)
+    public function __construct(MessageInterface $request = null)
     {
         $this->request = $request;
+    }
+
+    /**
+     * @param MessageInterface $request
+     * @return $this
+     */
+    public function setRequest(MessageInterface $request)
+    {
+        $this->request = $request;
+        return $this;
     }
 
     /**
@@ -38,7 +49,7 @@ class GitLab implements AdapterInterface
      */
     public function identity()
     {
-        if (! Console::isConsole()) {
+        if ($this->request instanceof HttpRequest) {
             /** @var HeaderInterface|GenericHeader $genericHeader */
             $genericHeader = $this->request
                 ->getHeaders()

@@ -31,7 +31,7 @@ class IndexController extends AbstractRestfulController
     }
 
     /**
-     * @return JsonModel
+     * @return array|JsonModel
      */
     public function indexAction()
     {
@@ -41,6 +41,10 @@ class IndexController extends AbstractRestfulController
         if (! $request->isPost()) {
             return $this->notFoundAction();
         }
+
+        $this->deployManager
+            ->getAdapter()
+            ->setRequest($request);
 
         if (! $this->deployManager->verify()) {
             return new JsonModel([
