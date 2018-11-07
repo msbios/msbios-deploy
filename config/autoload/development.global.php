@@ -31,6 +31,20 @@ return [
 
     Module::class => [
         'adapter' => GitLab::class,
-        'token' => 'ed076287532e86365e841e92bfc50d8c'
+        'token' => 'ed076287532e86365e841e92bfc50d8c',
+        'commands' => [
+            'Code Pull Operation' => [
+                'type' => Command::class,
+                'options' => [
+                    'command' => "/usr/bin/git pull origin master 2>&1",
+                ]
+            ],
+            [
+                'type' => Shell::class,
+                'options' => [
+                    'command' => "bash msbios-deploy.sh 2>&1",
+                ]
+            ]
+        ]
     ]
 ];
