@@ -41,25 +41,4 @@ class GitLab implements AdapterInterface
         $genericHeader = $this->headers->get('X-Gitlab-Token');
         return $genericHeader->getFieldValue();
     }
-
-    /**
-     * @param DeployManagerInterface $deployManager
-     * @param array|null $data
-     */
-    public function report(DeployManagerInterface $deployManager, array $data = null)
-    {
-        /** @var array $output */
-        $output = $deployManager->getOutput();
-
-        /** @var Message $mail */
-        $mail = new Message;
-        $mail->setBody(implode("\r\n", $output))
-            ->setFrom('msbios@gmail.com', self::class)
-            ->setTo($data['user_email'], $data['user']['name'])
-            ->setSubject("inf - Deploy Project {$data['project']['name']}");
-
-        /** @var TransportInterface $transport */
-        $transport = new Sendmail('-freturn_to_me@example.com');
-        $transport->send($mail);
-    }
 }

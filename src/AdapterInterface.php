@@ -15,11 +15,4 @@ interface AdapterInterface
      * @return bool
      */
     public function identity();
-
-    /**
-     * @param DeployManagerInterface $deployManager
-     * @param array|null $data
-     * @return mixed
-     */
-    public function report(DeployManagerInterface $deployManager, array $data = null);
 }
