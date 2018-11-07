@@ -8,7 +8,7 @@ namespace MSBios\Deploy\Controller;
 
 use MSBios\Deploy\DeployManagerInterface;
 use Zend\Http\Request;
-use Zend\Mvc\Controller\AbstractRestfulController;
+use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Stdlib\MessageInterface;
 use Zend\View\Model\JsonModel;
 
@@ -16,7 +16,7 @@ use Zend\View\Model\JsonModel;
  * Class IndexController
  * @package MSBios\Deploy\Controller
  */
-class IndexController extends AbstractRestfulController
+class IndexController extends AbstractActionController
 {
     /** @var  DeployManagerInterface */
     protected $deployManager;
@@ -54,6 +54,7 @@ class IndexController extends AbstractRestfulController
         //     ? $this->jsonDecode($request->getContent())
         //     : $request->getPost()->toArray();
 
+        /** @var array $data */
         $data = json_decode(file_get_contents('php://input'), true);
 
         $this->deployManager->run($data);
