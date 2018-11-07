@@ -48,6 +48,13 @@ class IndexController extends AbstractRestfulController
      */
     public function indexAction()
     {
+        /** @var MessageInterface|Request $request */
+        $request = $this->getRequest();
+
+        if (! $request->isPost()) {
+            return $this->notFoundAction();
+        }
+
         if (! $this->deployManager->verify()) {
             $this->response->setStatusCode(Response::STATUS_CODE_403);
             return new JsonModel([
@@ -55,9 +62,6 @@ class IndexController extends AbstractRestfulController
                 'message' => 'Access Denied.'
             ]);
         }
-
-        /** @var MessageInterface|Request $request */
-        $request = $this->getRequest();
 
         /** @var array $response */
         $data = ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON))
