@@ -6,7 +6,6 @@
 
 namespace MSBios\Deploy;
 
-use Zend\Router\Http\Method;
 use Zend\Router\Http\Segment;
 
 return [
@@ -23,15 +22,6 @@ return [
                             'defaults' => [
                                 'controller' => Controller\IndexController::class,
                                 'action' => 'index'
-                            ],
-                        ],
-                        'may_terminate' => true,
-                        'child_routes' => [
-                            [
-                                'type' => Method::class,
-                                'options' => [
-                                    'verb' => 'post'
-                                ],
                             ],
                         ],
                     ],

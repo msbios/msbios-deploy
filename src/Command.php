@@ -34,7 +34,7 @@ class Command implements CommandInterface
      */
     public function getName()
     {
-        return !empty($this->name)
+        return ! empty($this->name)
             ? $this->name : $this->command;
     }
 

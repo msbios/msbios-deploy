@@ -97,8 +97,7 @@ class DeployManager implements DeployManagerInterface
         /** @var boolean $result */
         $result = ($identity == $this->token);
 
-        $this->getEventManager()->trigger(self::EVENT_VERIFY, [
-            'deploy' => $this,
+        $this->getEventManager()->trigger(self::EVENT_VERIFY, $this, [
             'message' => implode('\r\n', [
                 "Verified information:",
                 sprintf("Adapter identifier information: %s", $identity),
@@ -180,16 +179,13 @@ class DeployManager implements DeployManagerInterface
                 $output[] = $command->run($data);
             }
 
-            $eventManager->trigger(self::EVENT_REPORT, [
-                'deploy' => $this,
+            $eventManager->trigger(self::EVENT_REPORT, $this, [
                 'message' => implode("\r\n", $output) ,
                 'data' => $data
             ]);
-
         } catch (Exception $exception) {
             header("500 Internal Server Error", true, Response::STATUS_CODE_500);
-            $eventManager->trigger(self::EVENT_REPORT_ERROR, [
-                'deploy' => $this,
+            $eventManager->trigger(self::EVENT_REPORT_ERROR, $this, [
                 'message' => $exception->getMessage(),
                 'data' => $data
             ]);

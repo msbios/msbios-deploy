@@ -38,21 +38,23 @@ class IndexController extends AbstractRestfulController
         /** @var MessageInterface|Request $request */
         $request = $this->getRequest();
 
-        if (!$request->isPost()) {
+        if (! $request->isPost()) {
             return $this->notFoundAction();
         }
 
-        if (!$this->deployManager->verify()) {
+        if (! $this->deployManager->verify()) {
             return new JsonModel([
                 'success' => false,
                 'message' => 'Verified token is not allowed. Access Denied'
             ]);
         }
 
-        /** @var array $response */
-        $data = ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON))
-            ? $this->jsonDecode($request->getContent())
-            : $request->getPost()->toArray();
+        // /** @var array $response */
+        // $data = ($this->requestHasContentType($request, self::CONTENT_TYPE_JSON))
+        //     ? $this->jsonDecode($request->getContent())
+        //     : $request->getPost()->toArray();
+
+        $data = json_decode(file_get_contents('php://input'), true);
 
         $this->deployManager->run($data);
 
