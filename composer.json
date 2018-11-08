@@ -26,7 +26,8 @@
   "require": {
     "msbios/monolog": "^1.0",
     "deployer/deployer": "^6.0",
-    "zendframework/zend-mail": "^2.10"
+    "zendframework/zend-mail": "^2.10",
+    "zendframework/zend-mvc-console": "^1.2"
   },
   "require-dev": {
     "msbios/application": "^1.0",

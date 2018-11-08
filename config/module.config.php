@@ -6,6 +6,7 @@
 
 namespace MSBios\Deploy;
 
+use Zend\Mvc\Console\Router\Simple;
 use Zend\Router\Http\Segment;
 
 return [
@@ -20,7 +21,7 @@ return [
                         'options' => [
                             'route' => 'deploy[/]',
                             'defaults' => [
-                                'controller' => Controller\IndexController::class,
+                                'controller' => Controller\HttpController::class,
                                 'action' => 'index'
                             ],
                         ],
@@ -30,10 +31,29 @@ return [
         ],
     ],
 
+    'console' => [
+        'router' => [
+            'routes' => [
+                'deploy' => [
+                    'type' => Simple::class,
+                    'options' => [
+                        'route' => 'deploy',
+                        'defaults' => [
+                            'controller' => Controller\ConsoleController::class,
+                            'action' => 'index',
+                        ],
+                    ],
+                ]
+            ],
+        ],
+    ],
+
     'controllers' => [
         'factories' => [
-            Controller\IndexController::class =>
-                Factory\IndexControllerFactory::class,
+            Controller\ConsoleController::class =>
+                Factory\DeployControllerFactory::class,
+            Controller\HttpController::class =>
+                Factory\DeployControllerFactory::class,
         ],
     ],
 
@@ -56,9 +76,9 @@ return [
 
     \MSBios\Monolog\Module::class => [
         'loggers' => [
-            Controller\IndexController::class => [
+            Controller\HttpController::class => [
                 'handlers' => [
-                    Controller\IndexController::class
+                    Controller\HttpController::class
                 ],
                 'processors' => [
                     \Monolog\Processor\WebProcessor::class,
@@ -68,17 +88,17 @@ return [
         ],
 
         'handlers' => [
-            Controller\IndexController::class => [
+            Controller\HttpController::class => [
                 'class' => \Monolog\Handler\StreamHandler::class,
                 'args' => [
                     'stream' => './data/logs/deploy.handler.log'
                 ],
-                'formatter' => Controller\IndexController::class
+                'formatter' => Controller\HttpController::class
             ],
         ],
 
         'formatters' => [
-            Controller\IndexController::class => [
+            Controller\HttpController::class => [
                 'class' => \Monolog\Formatter\LineFormatter::class,
                 'args' => [
                     'format' => "%level_name%:%datetime% - %message%\n",
@@ -111,18 +131,7 @@ return [
          * Default: []
          */
         'commands' => [
-            // [
-            //     'type' => Command::class,
-            //     'options' => [
-            //         'command' => "/usr/bin/git pull origin master 2>&1",
-            //     ]
-            // ],
-            // [
-            //     'type' => Shell::class,
-            //     'options' => [
-            //         'command' => "bash msbios-deploy.sh 2>&1",
-            //     ]
-            // ]
+            // ...
         ]
     ]
 ];

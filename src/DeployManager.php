@@ -180,7 +180,7 @@ class DeployManager implements DeployManagerInterface
 
     /**
      * @param array|null $data
-     * @return string
+     * @return array|mixed
      */
     public function run(array $data = null)
     {
@@ -197,10 +197,15 @@ class DeployManager implements DeployManagerInterface
                 $output[] = $command->run($data);
             }
 
-            $eventManager->trigger(self::EVENT_REPORT, $this, [
+            /** @var array $argv */
+            $argv = [
                 'message' => implode("\r\n", $output) ,
                 'data' => $data
-            ]);
+            ];
+
+            $eventManager->trigger(self::EVENT_REPORT, $this, $argv);
+
+            return $argv['message'];
         } catch (Exception $exception) {
             header("500 Internal Server Error", true, Response::STATUS_CODE_500);
             $eventManager->trigger(self::EVENT_REPORT_ERROR, $this, [

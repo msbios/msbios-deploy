@@ -6,6 +6,7 @@
 return [
     // Retrieve list of modules used in this application.
     'modules' => [
+        'Zend\Mvc\Console',
         'Zend\Mail',
         'Zend\Cache',
         'Zend\Serializer',

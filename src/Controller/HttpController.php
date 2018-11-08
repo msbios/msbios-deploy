@@ -6,32 +6,24 @@
 
 namespace MSBios\Deploy\Controller;
 
-use MSBios\Deploy\DeployManagerInterface;
+use MSBios\Deploy\DeployManagerAwareInterface;
+use MSBios\Deploy\DeployManagerAwareTrait;
 use Zend\Http\Request;
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\Stdlib\MessageInterface;
 use Zend\View\Model\JsonModel;
 
 /**
- * Class IndexController
+ * Class HttpController
  * @package MSBios\Deploy\Controller
  */
-class IndexController extends AbstractRestfulController
+class HttpController extends AbstractRestfulController implements DeployManagerAwareInterface
 {
-    /** @var  DeployManagerInterface */
-    protected $deployManager;
-
-    /**
-     * IndexController constructor.
-     * @param DeployManagerInterface $deployManager
-     */
-    public function __construct(DeployManagerInterface $deployManager)
-    {
-        $this->deployManager = $deployManager;
-    }
+    use DeployManagerAwareTrait;
 
     /**
      * @return array|JsonModel
+     * @throws \MSBios\Deploy\Exception\Exception
      */
     public function indexAction()
     {
